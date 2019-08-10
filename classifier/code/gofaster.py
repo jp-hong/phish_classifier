@@ -14,9 +14,11 @@ class GoFaster():
 
     def parallelize(self, df, func):
         df_split = np.array_split(df, self.n_partitions)
-        p = Pool(self.n_jobs)
-        df = pd.concat(p.map(func, df_split))
-        p.close()
-        p.join()
-        return df
+
+        with Pool(self.n_jobs) as p:
+            results = p.map(func, df_split)
+            p.close()
+            p.join()
+
+        return pd.concat(results)
 
