@@ -2,7 +2,6 @@
 
 import re
 import string
-from urllib.parse import urlparse, quote
 import numpy as np
 
 
