@@ -21,11 +21,14 @@ def tokenize(url, include_separators=False):
     return list(filter(None, re.split("[" + seps + "]", url)))
 
 
-def char_level_encoder(url):
-    if len(url) > 128:
-        url = url[:128]
+def char_level_encoder(url, ndim=128):
+    if len(url) > ndim:
+        url = url[:ndim]
     
     vect = list(map(ord, list(url)))
-    
+
+    if len(vect) < ndim:
+        vect += [0] * (ndim - len(vect))
+
     return np.array(vect)
 
