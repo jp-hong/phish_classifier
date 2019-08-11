@@ -16,17 +16,16 @@ def tokenize(url, include_separators=False):
     seps = string.punctuation
     
     if include_separators:
-        return list(filter(None, re.split(r"([" + seps + r"])", url)))
+        return list(filter(None, re.split("([" + seps + "])", url)))
 
-    return list(filter(None, re.split(r"[" + seps + r"]", url)))
+    return list(filter(None, re.split("[" + seps + "]", url)))
 
 
-def char_level_encoder(s):
-    c_dict = {string.printable[i]:i for i in range(len(string.printable))}
-    vect = np.array([0] * 128)
+def char_level_encoder(url):
+    if len(url) > 128:
+        url = url[:128]
     
-    for i in range(min(128, len(s))):
-        vect[i] = c_dict[s[i]]
-        
-    return vect
+    vect = list(map(ord, list(url)))
+    
+    return np.array(vect)
 
