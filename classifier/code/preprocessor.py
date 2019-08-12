@@ -5,14 +5,17 @@ import string
 import numpy as np
 
 
-def tokenize(url, include_separators=False):
+def tokenize(url, seps=None, include_separators=False):
 
     """
     Split url by separators and return as list. Separators are included
     by default.
     """
-
-    seps = string.punctuation
+    
+    if seps == None:
+        seps = string.punctuation
+    else:
+        seps = seps
     
     if include_separators:
         return list(filter(None, re.split("([" + seps + "])", url)))
