@@ -106,5 +106,6 @@ venv.bak/
 # MacOS
 .DS_Store
 
-# large files
+# untracked files
 classifier/data/large_files
+classifier/untracked
