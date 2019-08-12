@@ -16,10 +16,10 @@ def load(path):
     return obj
 
 
-def print_scores(scores, label=None):
+def print_cv_score(scores, label=None):
     if label:
-        print("Accuracy: %0.2f (+/- %0.4f) [%s]" % (scores.mean(), 
+        print("Cross validation score: %0.2f (+/- %0.4f) [%s]" % (scores.mean(), 
             scores.std(), label))
     else:
-        print("Accuracy: %0.2f (+/- %0.4f)" % (scores.mean(), scores.std()))
+        print("Cross validation score: %0.2f (+/- %0.4f)" % (scores.mean(), scores.std()))
 
