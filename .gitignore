@@ -107,5 +107,4 @@ venv.bak/
 .DS_Store
 
 # untracked files
-classifier/data/large_files
 classifier/untracked
