@@ -7,9 +7,8 @@ from sklearn.model_selection import cross_val_score
 from .util import print_cv_score
 
 
-def workflow(model, label, x_train, x_test, y_train, y_test, mp=True):
+def workflow(model, label, x_train, x_test, y_train, y_test, n_jobs):
 
-    n_jobs = cpu_count() - 1 if mp else 1
     fit_result = model.fit(x_train, y_train)
     print(fit_result)
     print()
