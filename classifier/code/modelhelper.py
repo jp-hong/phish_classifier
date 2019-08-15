@@ -5,10 +5,17 @@ from os import cpu_count
 from sklearn.metrics import classification_report
 from sklearn.model_selection import cross_val_score
 
-from .util import print_cv_score
+
+def print_cv_score(scores, label=None, metric=None):
+    if label:
+        print("Cross validation score: %0.4f (+/- %0.4f) [%s / %s]" % \
+            (scores.mean(), scores.std(), metric, label))
+    else:
+        print("Cross validation score: %0.4f (+/- %0.4f) [%s]" % \
+            (scores.mean(), scores.std(), metric))
 
 
-def workflow(model, label, x_train, x_test, y_train, y_test, n_jobs):
+def workflow(model, label, metric, x_train, x_test, y_train, y_test, n_jobs):
 
     start = perf_counter()
     fit_result = model.fit(x_train, y_train)
@@ -30,12 +37,12 @@ def workflow(model, label, x_train, x_test, y_train, y_test, n_jobs):
         estimator=model,
         X=x_train,
         y=y_train,
-        scoring="accuracy",
+        scoring=metric,
         cv=10,
         n_jobs=n_jobs
     )
 
-    print_cv_score(cv_scores, label=label)
+    print_cv_score(cv_scores, label=label, metric=metric)
     end = perf_counter()
     cv_time = end - start
 
