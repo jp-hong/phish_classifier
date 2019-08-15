@@ -15,6 +15,12 @@ def print_cv_score(scores, label=None, metric=None):
             (scores.mean(), scores.std(), metric))
 
 
+def print_run_time(f_time, p_time, cv_time):
+    print("\nElapsed time: %0.2fs" % (f_time + p_time + cv_time), end=" ")
+    print("[fit %0.2fs, predict %0.2fs, cv: %0.2fs]" % \
+        (f_time, p_time, cv_time))
+
+
 def workflow(model, label, metric, x_train, x_test, y_train, y_test, n_jobs):
 
     start = perf_counter()
@@ -22,7 +28,7 @@ def workflow(model, label, metric, x_train, x_test, y_train, y_test, n_jobs):
     print(fit_result)
     print()
     end = perf_counter()
-    fit_time = end - start
+    f_time = end - start
 
     start = perf_counter()
     y_pred = model.predict(x_test)
@@ -30,7 +36,7 @@ def workflow(model, label, metric, x_train, x_test, y_train, y_test, n_jobs):
     print("MODEL: {}".format(label))
     print(classification_report(y_test, y_pred))
     end = perf_counter()
-    pred_time = end - start
+    p_time = end - start
 
     start = perf_counter()
     cv_scores = cross_val_score(
@@ -46,8 +52,6 @@ def workflow(model, label, metric, x_train, x_test, y_train, y_test, n_jobs):
     end = perf_counter()
     cv_time = end - start
 
-    print("\nElapsed time: %0.2fs" % (fit_time + pred_time + cv_time), end=" ")
-    print("[fit %0.2fs, predict %0.2fs, cv: %0.2fs]" % \
-        (fit_time, pred_time, cv_time))
+    print_run_time(f_time, p_time, cv_time)
 
     return cv_scores
