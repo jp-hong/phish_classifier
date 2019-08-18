@@ -3,7 +3,7 @@
 from time import perf_counter
 from os import cpu_count
 from sklearn.metrics import classification_report
-from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import cross_val_score, cross_validate
 
 
 def print_cv_score(scores, label=None, metric=None):
@@ -21,7 +21,8 @@ def print_run_time(f_time, p_time, cv_time):
         (f_time, p_time, cv_time))
 
 
-def workflow(model, label, metric, x_train, x_test, y_train, y_test, n_jobs):
+def workflow(model, label, scoring, n_cv, x_train, x_test, 
+    y_train, y_test, n_jobs=4):
 
     start = perf_counter()
     fit_result = model.fit(x_train, y_train)
@@ -39,16 +40,19 @@ def workflow(model, label, metric, x_train, x_test, y_train, y_test, n_jobs):
     p_time = end - start
 
     start = perf_counter()
-    cv_scores = cross_val_score(
+
+    cv_scores = cross_validate(
         estimator=model,
         X=x_train,
         y=y_train,
-        scoring=metric,
-        cv=10,
+        scoring=scoring,
+        cv=n_cv,
         n_jobs=n_jobs
     )
 
-    print_cv_score(cv_scores, label=label, metric=metric)
+    for key in cv_scores.keys():
+        print_cv_score(cv_scores[key], label=label, metric=key)
+
     end = perf_counter()
     cv_time = end - start
 
