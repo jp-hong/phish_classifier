@@ -6,6 +6,6 @@ seaborn
 wordsegment
 tldextract
 lightgbm
-tensorflow==1.14
+tensorflow==2.0.0-beta1
 keras
 plaidml-keras
