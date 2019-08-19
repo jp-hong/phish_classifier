@@ -6,3 +6,6 @@ seaborn
 wordsegment
 tldextract
 lightgbm
+tensorflow==1.14
+keras
+plaidml-keras
