@@ -4,4 +4,3 @@ This is a WORK IN PROGRESS!
 
 NOTE:
  - Requires LightGBM to be installed
- - Uses plaidml for GPU acceleration of keras on non Nvidia GPUs
