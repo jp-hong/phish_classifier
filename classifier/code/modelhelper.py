@@ -4,6 +4,8 @@ from time import perf_counter
 from os import cpu_count
 from sklearn.metrics import classification_report
 from sklearn.model_selection import cross_val_score, cross_validate
+import numpy as np
+from numba import jit
 
 
 def print_cv_score(scores, K, label=None, metric=None):
@@ -59,3 +61,27 @@ def workflow(model, label, scoring, K, x_train, x_test,
     print_run_time(f_time, p_time, cv_time)
 
     return cv_scores
+
+
+@jit(nopython=True)
+def to_bin(y):
+    y0 = np.zeros(shape=y.shape, dtype=np.int32)
+
+    for i in range(y.shape[0]):
+        if y[i][0] > 0.5:
+            y0[i][0] = 1
+        else:
+            y0[i][1] = 1
+
+    return y0
+
+
+@jit(nopython=True)
+def recall():
+    pass
+
+
+@jit(nopython=True)
+def to_1D():
+    pass
+
