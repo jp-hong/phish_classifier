@@ -91,6 +91,13 @@ def recall(y_true, y_pred):
 
 
 @jit(nopython=True)
-def to_1D():
-    pass
+def to_1D(y):
+    l = y.shape[0]
+    y0 = np.zeros(l, dtype=np.int32)
+
+    for i in range(l):
+        if y[i][1] == 1:
+            y0[i] = 1
+
+    return y0
 
