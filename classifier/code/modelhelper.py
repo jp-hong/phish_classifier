@@ -77,8 +77,17 @@ def to_bin(y):
 
 
 @jit(nopython=True)
-def recall():
-    pass
+def recall(y_true, y_pred):
+    tp, fn = 0, 0
+
+    for i in range(y_true.shape[0]):
+        if y_true[i][1] == 1 and y_pred[i][1] == 1:
+            tp += 1
+
+        if y_true[i][1] == 1 and y_pred[i][1] == 0:
+            fn += 1
+
+    return tp / (tp + fn)
 
 
 @jit(nopython=True)
