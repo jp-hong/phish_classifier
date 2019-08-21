@@ -3,6 +3,7 @@
 import re
 import string
 import numpy as np
+from numba import jit
 
 
 def tokenize(url, seps=None, include_separators=False):
@@ -33,4 +34,25 @@ def char_level_encoder(url, ndim=128, pad=True):
         vect += [0] * (ndim - len(vect))
 
     return np.array(vect)
+
+
+@jit(nopython=True)
+def char_onehot(char_array, unique_chars):
+    zlen = char_array.shape[0]
+    ylen = char_array.shape[1]
+#     xlen = unique_chars.shape[0]
+    xlen = 139 # dim for pre-trained model
+
+    arr = np.zeros(shape=(zlen, ylen * xlen))
+
+    for i in range(zlen):
+        for j in range(ylen):
+            for k in range(xlen):
+                if char_array[i][j] == unique_chars[k]:
+                    xidx = k
+                    break
+                    
+            arr[i][ylen * j + xidx] = 1
+            
+    return arr
 
