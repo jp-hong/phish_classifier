@@ -40,8 +40,8 @@ def char_level_encoder(url, ndim=128, pad=True):
 def char_onehot(char_array, unique_chars):
     zlen = char_array.shape[0]
     ylen = char_array.shape[1]
-#     xlen = unique_chars.shape[0]
-    xlen = 139 # dim for pre-trained model
+    xlen = unique_chars.shape[0]
+    # xlen = 139 # dim for pre-trained model
 
     arr = np.zeros(shape=(zlen, ylen * xlen))
 
