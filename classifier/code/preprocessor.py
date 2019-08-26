@@ -51,7 +51,7 @@ def char_onehot(char_array, unique_chars, n_unique):
                     xidx = k
                     break
                     
-            arr[i][ylen * j + xidx] = 1
+            arr[i][xlen * j + xidx] = 1
             
     return arr
 
