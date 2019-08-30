@@ -99,9 +99,43 @@ def accuracy(y_true, y_pred):
             tp += 1
 
         if y_true[i][1] == 0 and y_pred[i][1] == 0:
-            tp += 1
+            tn += 1
 
     return (tp + tn) / y_true.shape[0]
+
+
+@jit(nopython=True)
+def evaluate(y_true, y_pred):
+    tp, tn, fp, fn = 0, 0, 0, 0
+    n = y_true.shape[0]
+
+    for i in range(n):
+        if y_true[i][1] == 1 and y_pred[i][1] == 1:
+            tp += 1
+
+        elif y_true[i][1] == 0 and y_pred[i][1] == 0:
+            tn += 1
+
+        elif y_true[i][1] == 0 and y_pred[i][1] == 1:
+            fp += 1
+
+        elif y_true[i][1] == 1 and y_pred[i][1] == 0:
+            fn += 1
+
+    acc = (tp + tn) / (tp + tn + fp + fn)
+    pre = tp / (tp + fp)
+    rec = tp / (tp + fn)
+    fal = fp / (tn + fp)
+
+    scores = {
+        "accuracy": acc,
+        "precision": pre,
+        "recall": rec,
+        "fallout": fal
+    }
+
+    return scores
+
 
 
 @jit(nopython=True)
