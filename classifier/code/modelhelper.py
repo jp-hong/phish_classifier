@@ -77,6 +77,18 @@ def to_bin(y):
 
 
 @jit(nopython=True)
+def to_1D(y):
+    l = y.shape[0]
+    y0 = np.zeros(l, dtype=np.int32)
+
+    for i in range(l):
+        if y[i][1] == 1:
+            y0[i] = 1
+
+    return y0
+
+
+@jit(nopython=True)
 def recall(y_true, y_pred):
     tp, fn = 0, 0
 
@@ -137,20 +149,8 @@ def evaluate(y_true, y_pred):
     return scores
 
 
-
-@jit(nopython=True)
-def to_1D(y):
-    l = y.shape[0]
-    y0 = np.zeros(l, dtype=np.int32)
-
-    for i in range(l):
-        if y[i][1] == 1:
-            y0[i] = 1
-
-    return y0
-
-
 def kfold(model, model_params, x, y, cv=10):
+    scores = []
     kf = KFold(n_splits=cv, shuffle=True, random_state=11)
 
     for train_idx, test_idx in kf.split(x, y):
@@ -167,5 +167,8 @@ def kfold(model, model_params, x, y, cv=10):
             callbacks=[model_params["es"]]
         )
 
-        y_pred = model.predict(x_test)
+        y_pred = to_bin(model.predict(x_test))
+        score = evaluate(y_test, y_pred)
+        scores.append(score)
 
+    return scores
