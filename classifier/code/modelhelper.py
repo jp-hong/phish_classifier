@@ -172,3 +172,15 @@ def kfold(model, model_params, x, y, cv=10):
         scores.append(score)
 
     return scores
+
+
+@jit
+def scores_dict_to_array(scores_dict):
+    arr = np.zeros(shape=(4, len(scores_dict)))
+
+    for i, score in enumerate(scores_dict):
+        for j, val in enumerate(score.values()):
+            arr[j][i] = val
+
+    return arr
+
