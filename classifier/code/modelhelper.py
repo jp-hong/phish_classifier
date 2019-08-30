@@ -3,7 +3,7 @@
 from time import perf_counter
 from os import cpu_count
 from sklearn.metrics import classification_report
-from sklearn.model_selection import cross_val_score, cross_validate
+from sklearn.model_selection import KFold, cross_val_score, cross_validate
 import numpy as np
 from numba import jit
 
@@ -91,6 +91,20 @@ def recall(y_true, y_pred):
 
 
 @jit(nopython=True)
+def accuracy(y_true, y_pred):
+    tp, tn = 0, 0
+
+    for i in range(y_true.shape[0]):
+        if y_true[i][1] == 1 and y_pred[i][1] == 1:
+            tp += 1
+
+        if y_true[i][1] == 0 and y_pred[i][1] == 0:
+            tp += 1
+
+    return (tp + tn) / y_true.shape[0]
+
+
+@jit(nopython=True)
 def to_1D(y):
     l = y.shape[0]
     y0 = np.zeros(l, dtype=np.int32)
@@ -100,4 +114,24 @@ def to_1D(y):
             y0[i] = 1
 
     return y0
+
+
+def kfold(model, model_params, x, y, cv=10):
+    kf = KFold(n_splits=cv, shuffle=True, random_state=11)
+
+    for train_idx, test_idx in kf.split(x, y):
+        x_train, y_train = x[train_idx], y[train_idx]
+        x_test, y_test = x[test_idx], y[test_idx]
+
+        model.fit(
+            x_train,
+            y_train,
+            batch_size=model_params["batch_size"],
+            epochs=model_params["epochs"],
+            verbose=2,
+            validation_data=(x_test, y_test),
+            callbacks=[model_params["es"]]
+        )
+
+        y_pred = model.predict(x_test)
 
