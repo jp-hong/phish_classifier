@@ -149,7 +149,7 @@ def evaluate(y_true, y_pred):
     return scores
 
 
-def kfold(model, model_params, x, y, cv=10):
+def kfold(model, model_params, x, y, cv=10, verbose=0):
     scores = []
     kf = KFold(n_splits=cv, shuffle=True, random_state=11)
 
@@ -162,7 +162,7 @@ def kfold(model, model_params, x, y, cv=10):
             y_train,
             batch_size=model_params["batch_size"],
             epochs=model_params["epochs"],
-            verbose=2,
+            verbose=verbose,
             validation_data=(x_test, y_test),
             callbacks=[model_params["es"]]
         )
