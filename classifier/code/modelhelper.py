@@ -150,10 +150,16 @@ def evaluate(y_true, y_pred):
 
 
 def kfold(model, model_params, x, y, cv=10, verbose=0):
-    scores = []
+    scores, i = [], 1
     kf = KFold(n_splits=cv, shuffle=True, random_state=11)
 
+    print("Starting %d-fold cross validation:" % cv)
+    
     for train_idx, test_idx in kf.split(x, y):
+        start = perf_counter()
+        print("\tValidation %d of %d ... " % (i, cv), end="")
+        i += 1
+        
         x_train, y_train = x[train_idx], y[train_idx]
         x_test, y_test = x[test_idx], y[test_idx]
 
@@ -170,6 +176,9 @@ def kfold(model, model_params, x, y, cv=10, verbose=0):
         y_pred = to_bin(model.predict(x_test))
         score = evaluate(y_test, y_pred)
         scores.append(score)
+        
+        end = perf_counter()
+        print("done [%0.2fs]" % (end - start))
 
     return scores
 
