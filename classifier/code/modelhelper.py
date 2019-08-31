@@ -183,6 +183,43 @@ def kfold(model, model_params, x, y, cv=10, verbose=0):
     return scores
 
 
+def kfold_multi_input(model, model_params, x, y, cv=10, verbose=0):
+    scores, i = [], 1
+    kf = KFold(n_splits=cv, shuffle=True, random_state=11)
+
+    print("Starting %d-fold cross validation:" % cv)
+    
+    for train_idx, test_idx in kf.split(x[0], y):
+        start = perf_counter()
+        print("    Validation %02d of %02d ... " % (i, cv), end="")
+        i += 1
+        
+        x_train = [xi[train_idx] for xi in x]
+        y_train = y[train_idx]
+        
+        x_test = [xi[test_idx] for xi in x]
+        y_test = y[test_idx]
+
+        model.fit(
+            x_train,
+            y_train,
+            batch_size=model_params["batch_size"],
+            epochs=model_params["epochs"],
+            verbose=verbose,
+            validation_data=(x_test, y_test),
+            callbacks=[model_params["es"]]
+        )
+
+        y_pred = to_bin(model.predict(x_test))
+        score = evaluate(y_test, y_pred)
+        scores.append(score)
+        
+        end = perf_counter()
+        print("done [%0.2fs]" % (end - start))
+
+    return scores
+
+
 def scores_dict_to_array(scores_dict):
     arr = np.zeros(shape=(4, len(scores_dict)))
 
