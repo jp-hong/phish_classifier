@@ -157,7 +157,7 @@ def kfold(model, model_params, x, y, cv=10, verbose=0):
     
     for train_idx, test_idx in kf.split(x, y):
         start = perf_counter()
-        print("\tValidation %d of %d ... " % (i, cv), end="")
+        print("    Validation %02d of %02d ... " % (i, cv), end="")
         i += 1
         
         x_train, y_train = x[train_idx], y[train_idx]
@@ -183,7 +183,6 @@ def kfold(model, model_params, x, y, cv=10, verbose=0):
     return scores
 
 
-@jit
 def scores_dict_to_array(scores_dict):
     arr = np.zeros(shape=(4, len(scores_dict)))
 
