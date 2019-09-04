@@ -109,3 +109,4 @@ venv.bak/
 # untracked files
 classifier/untracked
 classifier/test.ipynb
+Icon*
